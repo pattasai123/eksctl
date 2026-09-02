@@ -9,4 +9,6 @@ nodeGroups:
   - name: k8s-node
     instanceType: t3.small
     desiredCapacity: 2
+
+
     spot: true
