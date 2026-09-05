@@ -9,5 +9,5 @@ variable "domain_name"{
 }
 
 variable "instances"{
-    default=Kubernetes
+    default="Kubernetes"
 }
