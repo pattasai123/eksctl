@@ -2,23 +2,17 @@ resource "aws_instance" "terraform" {
   ami           = var.ami_id
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_all.id]
-
+  user_data=file("eksctl-script.sh")
+  root_block_device {
+    volume_size           = 50
+    volume_type           = "gp3"
+    encrypted             = true
+    delete_on_termination = true
+  }
   tags = {
     Name = var.instances
     Terraform="true"
   }
-}
-resource "aws_ebs_volume" "data" {
-  availability_zone = "us-east-1"
-  size              = 50
-  type              = "gp3"
-}
-
-resource "aws_volume_attachment" "data" {
-  device_name = "/dev/sdf"
-  volume_id   = aws_ebs_volume.data.id
-  instance_id = aws_instance.terraform.id
-  user_data=file("eksctl-script.sh")
 }
 
 resource "aws_security_group" "allow_all" {
@@ -38,4 +32,8 @@ resource "aws_security_group" "allow_all" {
   tags = {
     Name = "allow_all"
   }
+}
+
+output "kubernetes_public_ip"{
+    value=aws_instance.terraform.public_ip
 }
